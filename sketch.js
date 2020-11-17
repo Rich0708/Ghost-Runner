@@ -2,9 +2,8 @@ var PLAY = 1;
 var END = 0;
 var gameState = PLAY;
 
-var bg,bgImage;
 
-var song;
+var song1;
 
 var b,bImage; 
 
@@ -21,6 +20,8 @@ var rand;
 
 function preload(){
   
+  song1 = loadSound("spooky.wav");
+  
   bImage = loadImage("black.png");
   
   ghostJumping = loadAnimation("ghost-jumping.png");
@@ -33,7 +34,6 @@ function preload(){
   
   towerImage = loadImage("tower.png");
   
-  bgImage = loadImage("bg.png");
   
   gameoverImage = loadImage("gameover.png");
   
@@ -42,8 +42,6 @@ function preload(){
 function setup() {
   createCanvas(400, 400);
   
-  bg = createSprite(200,200,20,20);
-  bg.addImage("bg",bgImage);
   
   tower = createSprite(200,0,20,800);
   tower.addImage("tower",towerImage);
@@ -70,9 +68,12 @@ function setup() {
 
 function draw() {
   background(220);
+  
+ 
   if(gameState === PLAY){
   ghost.collide(climberGroup);
   console.log (ghost.depth);
+   song1.play();
   
   rand = Math.round(random(80,300));
   
@@ -97,8 +98,8 @@ function draw() {
   if(ghost.isTouching(doorGroup)|| ghost.y>400){
   gameState =END;
   }
-  Door();
-  Climber();
+  spawnDoor();
+  spawnClimber();
   }
   else if(gameState === END){
   gameover.visible = true;
@@ -111,7 +112,7 @@ function draw() {
   
   drawSprites();
 }
-function Climber(){
+function spawnClimber(){
 
 if(frameCount%180===0){
   climber  = createSprite(200,50,20,20);
@@ -124,16 +125,17 @@ if(frameCount%180===0){
   climber.depth = ghost.depth;
   ghost.depth = ghost.depth + 1;
   
+  climber.debug = true;
   climberGroup.add(climber);
   
 }
 }
 
-function Door(){
+function spawnDoor(){
 if(frameCount%180===0){
 door = createSprite(200,0,20,20);
 door.addImage(doorImage);
-  //door.debug = true;
+ door.debug = true;
 door.setCollider("rectangle",0,60,50,1);
 console.log (door.depth);
 door.x = rand;
